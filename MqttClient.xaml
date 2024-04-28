@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="CLTLS_MQTT_GUI.MqttClient"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CLTLS_MQTT_GUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Label>CL-TLS Client IP:</Label>
+                <TextBox x:Name="tbCltlsClientIp" Text="127.0.0.1" Width="100" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                <Label>CL-TLS Client Port:</Label>
+                <TextBox x:Name="tbCltlsClientPort" Text="22600" Width="100" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                <Button x:Name="btnCltlsClientConnect" Width="90">Connect</Button>
+                <Button x:Name="btnCltlsClientDisconnect" Width="90" Margin="10,0,0,0" IsEnabled="False">Disconnect</Button>
+            </StackPanel>
+
+            <TextBlock Margin="20,0,0,0" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="Red">
+                CL-TLS Client Proxy<LineBreak/>
+                Not Connected
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>
