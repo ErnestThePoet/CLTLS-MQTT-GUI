@@ -33,11 +33,11 @@ namespace CLTLS_MQTT_GUI
         {
             btnCltlsClientConnect.IsEnabled = !connected;
             btnCltlsClientDisconnect.IsEnabled = connected;
-            tblkCltlsClientConnectionStatus.Foreground = new SolidColorBrush(
+            lblCltlsClientConnectionStatus.Foreground = new SolidColorBrush(
                 connected ? Colors.Green : Colors.Red);
-            tblkCltlsClientConnectionStatus.Text = connected ?
-                "CL-TLS Client Proxy\nConnected" :
-                "CL-TLS Client Proxy\nNot Connected";
+            lblCltlsClientConnectionStatus.Content = connected ?
+                "CL-TLS Client Proxy Connected" :
+                "CL-TLS Client Proxy Not Connected";
         }
 
         private void btnCltlsClientConnect_Click(object sender, RoutedEventArgs e)

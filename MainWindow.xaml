@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CLTLS_MQTT_GUI"
         mc:Ignorable="d"
-        Title="CL-TLS MQTT Demonstrator" Height="500" Width="850" MinHeight="500" MinWidth="850">
+        Title="CL-TLS MQTT Demonstrator" 
+        Height="500" Width="950" MinHeight="500" MinWidth="950">
     <Grid>
         <TabControl>
             <TabItem Header="Client">
