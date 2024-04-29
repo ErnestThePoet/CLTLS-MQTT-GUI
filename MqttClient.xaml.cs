@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +22,55 @@ namespace CLTLS_MQTT_GUI
     /// </summary>
     public partial class MqttClient : UserControl
     {
+        private Socket? cltlsClientProxySocket;
+
         public MqttClient()
         {
             InitializeComponent();
+        }
+
+        private void UpdateUiCltlsClentProxyConnection(bool connected)
+        {
+            btnCltlsClientConnect.IsEnabled = !connected;
+            btnCltlsClientDisconnect.IsEnabled = connected;
+            tblkCltlsClientConnectionStatus.Foreground = new SolidColorBrush(
+                connected ? Colors.Green : Colors.Red);
+            tblkCltlsClientConnectionStatus.Text = connected ?
+                "CL-TLS Client Proxy\nConnected" :
+                "CL-TLS Client Proxy\nNot Connected";
+        }
+
+        private void btnCltlsClientConnect_Click(object sender, RoutedEventArgs e)
+        {
+            var ipEndPoint = new IPEndPoint(
+                IPAddress.Parse(tbCltlsClientIp.Text),
+                int.Parse(tbCltlsClientPort.Text));
+
+            cltlsClientProxySocket = new(
+                ipEndPoint.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp);
+
+            try
+            {
+                cltlsClientProxySocket.Connect(ipEndPoint);
+                UpdateUiCltlsClentProxyConnection(true);
+            }
+            catch
+            {
+                UpdateUiCltlsClentProxyConnection(false);
+            }
+        }
+
+        private void btnCltlsClientDisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                cltlsClientProxySocket!.Disconnect(false);
+                UpdateUiCltlsClentProxyConnection(false);
+            }
+            catch
+            { }
         }
     }
 }

@@ -16,7 +16,7 @@
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Label>CL-TLS Client IP:</Label>
-                <TextBox x:Name="tbCltlsClientIp" Text="127.0.0.1" Width="100" VerticalContentAlignment="Center"/>
+                <TextBox x:Name="tbCltlsClientIp" Text="172.24.193.208" Width="100" VerticalContentAlignment="Center"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
@@ -25,11 +25,16 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
-                <Button x:Name="btnCltlsClientConnect" Width="90">Connect</Button>
-                <Button x:Name="btnCltlsClientDisconnect" Width="90" Margin="10,0,0,0" IsEnabled="False">Disconnect</Button>
+                <Button x:Name="btnCltlsClientConnect" Width="90" Click="btnCltlsClientConnect_Click">Connect</Button>
+                <Button x:Name="btnCltlsClientDisconnect" Width="90" Margin="10,0,0,0" IsEnabled="False" Click="btnCltlsClientDisconnect_Click">Disconnect</Button>
             </StackPanel>
 
-            <TextBlock Margin="20,0,0,0" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="Red">
+            <TextBlock x:Name="tblkCltlsClientConnectionStatus" 
+                       Margin="20,0,0,0" 
+                       TextAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       FontWeight="Bold" 
+                       Foreground="Red">
                 CL-TLS Client Proxy<LineBreak/>
                 Not Connected
             </TextBlock>
