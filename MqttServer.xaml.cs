@@ -146,6 +146,11 @@ namespace CLTLS_MQTT_GUI
                         break;
                     }
 
+                    if ((receiveFixedHeader[0] >>> 4) == MqttHelper.MSG_TYPE_DISCONNECT)
+                    {
+                        break;
+                    }
+
                     if ((receiveFixedHeader[0] >>> 4) != MqttHelper.MSG_TYPE_PUBLISH)
                     {
                         ShowError(
@@ -192,11 +197,6 @@ namespace CLTLS_MQTT_GUI
                     catch
                     {
                         ShowError("Failed to receive MQTT payload");
-                        break;
-                    }
-
-                    if ((receiveFixedHeader[0] >>> 4) == MqttHelper.MSG_TYPE_DISCONNECT)
-                    {
                         break;
                     }
 
