@@ -25,10 +25,22 @@ namespace CLTLS_MQTT_GUI
                     parsedValue :
                     -1;
             }
+            else if (size.EndsWith("K", true, null))
+            {
+                return int.TryParse(size.Substring(0, size.Length - 1), out parsedValue) ?
+                    KB * parsedValue :
+                    -1;
+            }
             else if (size.EndsWith("KB", true, null))
             {
                 return int.TryParse(size.Substring(0, size.Length - 2), out parsedValue) ?
                     KB * parsedValue :
+                    -1;
+            }
+            else if (size.EndsWith("M", true, null))
+            {
+                return int.TryParse(size.Substring(0, size.Length - 1), out parsedValue) ?
+                    MB * parsedValue :
                     -1;
             }
             else if (size.EndsWith("MB", true, null))
