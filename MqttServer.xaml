@@ -22,7 +22,6 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <Button x:Name="btnServerStart" Width="90" Click="btnServerStart_Click">Start</Button>
-                    <Button x:Name="btnServerStop" Width="90" Margin="10,0,0,0" IsEnabled="False" Click="btnServerStop_Click">Stop</Button>
                 </StackPanel>
 
                 <Label x:Name="lblServerStatus" 

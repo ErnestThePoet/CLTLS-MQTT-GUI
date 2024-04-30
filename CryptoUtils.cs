@@ -13,7 +13,12 @@ namespace CLTLS_MQTT_GUI
 
         public static string Sha256BytesB64(byte[] bytes)
         {
-            var hash = sha256.ComputeHash(bytes);
+            return Sha256BytesB64(bytes, 0, bytes.Length);
+        }
+
+        public static string Sha256BytesB64(byte[] bytes, int offset, int count)
+        {
+            var hash = sha256.ComputeHash(bytes, offset, count);
             return Convert.ToBase64String(hash);
         }
 

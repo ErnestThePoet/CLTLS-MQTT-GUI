@@ -8,6 +8,11 @@ namespace CLTLS_MQTT_GUI
 {
     class MqttHelper
     {
+        public static readonly byte MSG_TYPE_PUBLISH = 3;
+        public static readonly byte MSG_TYPE_DISCONNECT = 14;
+
+        public static readonly byte PUBLISH_FIRST_BYTE = 0x30;
+
         public static readonly int MAX_REMAINING_SIZE = 256 * 1024 * 1024 - 1;
         public static int GetMqttRemainingLengthByteCount(int remainingLength)
         {
