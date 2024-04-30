@@ -275,12 +275,11 @@ namespace CLTLS_MQTT_GUI
 
         private async void btnMqttPublish_Click(object sender, RoutedEventArgs e)
         {
-            int sendPayloadSize = 0;
             byte[]? sendPayload = null;
 
             if (mqttPublishMessageSource == MqttPublishMessageSource.ENTER_SIZE)
             {
-                sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
+                int sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
                 if (sendPayloadSize < 0)
                 {
                     Error.ShowError("Invalid size");
@@ -309,16 +308,14 @@ namespace CLTLS_MQTT_GUI
             {
                 var textBytes = Encoding.UTF8.GetBytes(tbMqttMessage.Text);
 
-                sendPayloadSize = textBytes.Length + 1;
-
-                sendPayload = new byte[sendPayloadSize];
+                sendPayload = new byte[textBytes.Length + 1];
                 sendPayload[0] = Constants.PAYLOAD_TYPE_UTF8;
                 textBytes.CopyTo(sendPayload, 1);
             }
 
-            var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayloadSize);
+            var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayload.Length);
 
-            byte[] sendBuffer = new byte[1 + encodedSendSize.Length + sendPayloadSize];
+            byte[] sendBuffer = new byte[1 + encodedSendSize.Length + sendPayload.Length];
 
             sendBuffer[0] = 0x30;
             encodedSendSize.CopyTo(sendBuffer, 1);
