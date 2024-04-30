@@ -8,6 +8,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ApplicationIcon>uires\icon.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
+    <Title>CL-TLS MQTT Demonstrator</Title>
+    <Authors>Ernest Cui</Authors>
+    <Company>Harbin Institute of Technology</Company>
+    <RepositoryUrl>https://github.com/ErnestThePoet/CLTLS-MQTT-GUI</RepositoryUrl>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="uires\icon.ico" />
+  </ItemGroup>
 
 </Project>
