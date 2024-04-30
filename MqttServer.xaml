@@ -38,11 +38,17 @@
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal">
-                    <Label Padding="5,5,0,5">SHA256:</Label>
-                    <Label x:Name="lblMqttMessageReceiveSha256" FontWeight="Bold" Padding="0,5,5,5"/>
-
                     <Label Padding="5,5,0,5">Length:</Label>
-                    <Label x:Name="lblMqttMessageReceiveLength" FontWeight="Bold" Padding="0,5,5,5"/>
+                    <Label x:Name="lblMqttMessageReceiveLength" 
+                           Foreground="DarkOrange" 
+                           FontWeight="Bold" 
+                           Padding="0,5,5,5"/>
+
+                    <Label Padding="5,5,0,5">SHA256:</Label>
+                    <Label x:Name="lblMqttMessageReceiveSha256" 
+                           Foreground="DarkOrange" 
+                           FontWeight="Bold" 
+                           Padding="0,5,5,5"/>
 
                     <Label DockPanel.Dock="Top"
                         x:Name="lblMqttMessageReceiveStatus"
@@ -58,11 +64,17 @@
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom"
                         Orientation="Horizontal">
-                    <Label Padding="5,5,0,5">SHA256:</Label>
-                    <Label x:Name="lblMqttMessageResponseSha256" FontWeight="Bold" Padding="0,5,5,5"/>
-
                     <Label Padding="5,5,0,5">Length:</Label>
-                    <Label x:Name="lblMqttMessageResponseLength" FontWeight="Bold" Padding="0,5,5,5"/>
+                    <Label x:Name="lblMqttMessageResponseLength"
+                           Foreground="DarkOrange" 
+                           FontWeight="Bold" 
+                           Padding="0,5,5,5"/>
+
+                    <Label Padding="5,5,0,5">SHA256:</Label>
+                    <Label x:Name="lblMqttMessageResponseSha256" 
+                           Foreground="DarkOrange" 
+                           FontWeight="Bold" 
+                           Padding="0,5,5,5"/>
 
                     <Label DockPanel.Dock="Top"
                     x:Name="lblMqttMessageResponseStatus"
