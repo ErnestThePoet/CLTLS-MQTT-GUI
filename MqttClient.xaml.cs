@@ -50,6 +50,15 @@ namespace CLTLS_MQTT_GUI
             UpdateUiServerConnection(false);
         }
 
+        private void ShowError(string message)
+        {
+            MessageBox.Show(message,
+                    "MQTT Client Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            return;
+        }
+
         private void UpdateUiCltlsClentProxyConnection(bool connected)
         {
             btnCltlsClientConnect.IsEnabled = !connected;
@@ -92,6 +101,12 @@ namespace CLTLS_MQTT_GUI
         {
             lblMqttDeliveryStatus.Content = delivered ? "Delivered" : "Not Delivered";
             lblMqttDeliveryStatus.Foreground = new SolidColorBrush(delivered ? Colors.Green : Colors.Blue);
+
+            if (!delivered)
+            {
+                lblMqttMessagePublishLength.Content = "-";
+                lblMqttMessagePublishSha256.Content = "-";
+            }
         }
 
         public void UpdateUiMqttPublishReceive(bool received)
@@ -109,7 +124,20 @@ namespace CLTLS_MQTT_GUI
             }
         }
 
-        private void btnCltlsClientConnect_Click(object sender, RoutedEventArgs e)
+        private async Task DisconnectCltlsClientProxySocket()
+        {
+            try
+            {
+                await cltlsClientProxySocket!.DisconnectAsync(false);
+                UpdateUiCltlsClentProxyConnection(false);
+                UpdateUiMqttPublishDelivery(false);
+                UpdateUiMqttPublishReceive(false);
+            }
+            catch
+            { }
+        }
+
+        private async void btnCltlsClientConnect_Click(object sender, RoutedEventArgs e)
         {
             IPEndPoint? ipEndPoint = null;
 
@@ -121,7 +149,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("IP address or port number invalid");
+                ShowError("IP address or port number invalid");
                 return;
             }
 
@@ -132,27 +160,19 @@ namespace CLTLS_MQTT_GUI
 
             try
             {
-                cltlsClientProxySocket.Connect(ipEndPoint);
+                await cltlsClientProxySocket.ConnectAsync(ipEndPoint);
                 UpdateUiCltlsClentProxyConnection(true);
             }
             catch
             {
-                Error.ShowError("Failed to connect to CL-TLS Client Proxy");
+                ShowError("Failed to connect to CL-TLS Client Proxy");
                 return;
             }
         }
 
-        private void btnCltlsClientDisconnect_Click(object sender, RoutedEventArgs e)
+        private async void btnCltlsClientDisconnect_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                cltlsClientProxySocket!.Disconnect(false);
-                UpdateUiCltlsClentProxyConnection(false);
-                UpdateUiMqttPublishDelivery(false);
-                UpdateUiMqttPublishReceive(false);
-            }
-            catch
-            { }
+            await DisconnectCltlsClientProxySocket();
         }
 
         private async void btnServerConnect_Click(object sender, RoutedEventArgs e)
@@ -164,14 +184,14 @@ namespace CLTLS_MQTT_GUI
 
             if (tbServerId.Text.Length != 16)
             {
-                Error.ShowError("Server identity must be 8-bytes (16 hex chars)");
+                ShowError("Server identity must be 8-bytes (16 hex chars)");
                 return;
             }
 
             int serverPort = 0;
             if (!int.TryParse(tbServerPort.Text, out serverPort) || serverPort < 0 || serverPort > 65535)
             {
-                Error.ShowError("Server port invalid");
+                ShowError("Server port invalid");
                 return;
             }
 
@@ -196,7 +216,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Server identity is not a valid hex string");
+                ShowError("Server identity is not a valid hex string");
                 return;
             }
 
@@ -206,7 +226,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to send CONNCTL Connect Request");
+                ShowError("Failed to send CONNCTL Connect Request");
                 return;
             }
 
@@ -218,20 +238,20 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to receive CONNCTL Connect Response");
+                ShowError("Failed to receive CONNCTL Connect Response");
                 return;
             }
 
             if (connectResponse[0] != 0x10)
             {
-                Error.ShowError($"Invalid response message type (0x{connectResponse[0]:X2}) received; " +
+                ShowError($"Invalid response message type (0x{connectResponse[0]:X2}) received; " +
                          "expecting CONNCTL_MSG_TYPE_CONNECT_RESPONSE (0x10)");
                 return;
             }
 
             if (connectResponse[1] == 0xF0)
             {
-                Error.ShowError("CL-TLS Client reports connection failed");
+                ShowError("CL-TLS Client Proxy reports connection failed");
                 return;
             }
 
@@ -247,30 +267,27 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to send MQTT DISCONNECT");
+                ShowError("Failed to send MQTT DISCONNECT");
                 return;
             }
         }
 
         private void tbMqttMessage_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (mqttPublishMessageSource == MqttPublishMessageSource.ENTER_TEXT)
-            {
-                lblMqttMessagePublishLength.Content = tbMqttMessage.Text.Length.ToString();
-                lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256StringB64(tbMqttMessage.Text);
-            }
+            UpdateUiMqttPublishDelivery(false);
         }
 
         private void rbEnterText_Checked(object sender, RoutedEventArgs e)
         {
             mqttPublishMessageSource = MqttPublishMessageSource.ENTER_TEXT;
+            UpdateUiMqttPublishDelivery(false);
         }
 
         private void rbEnterSize_Checked(object sender, RoutedEventArgs e)
         {
             mqttPublishMessageSource = MqttPublishMessageSource.ENTER_SIZE;
-            lblMqttMessagePublishLength.Content = "-";
-            lblMqttMessagePublishSha256.Content = "-";
+            UpdateUiMqttPublishDelivery(false);
+
         }
 
         private async void btnMqttPublish_Click(object sender, RoutedEventArgs e)
@@ -282,13 +299,13 @@ namespace CLTLS_MQTT_GUI
                 int sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
                 if (sendPayloadSize < 0)
                 {
-                    Error.ShowError("Invalid size");
+                    ShowError("Invalid size");
                     return;
                 }
 
                 if (sendPayloadSize > MqttHelper.MAX_REMAINING_SIZE)
                 {
-                    Error.ShowError("Size must be <= 256MB-1");
+                    ShowError("Size must be <= 256MB-1");
                     return;
                 }
 
@@ -300,9 +317,6 @@ namespace CLTLS_MQTT_GUI
                 random.NextBytes(sendPayload);
 
                 sendPayload[0] = Constants.PAYLOAD_TYPE_BINARY;
-
-                lblMqttMessagePublishLength.Content = sendPayloadSize.ToString();
-                lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(sendPayload);
             }
             else
             {
@@ -313,11 +327,15 @@ namespace CLTLS_MQTT_GUI
                 textBytes.CopyTo(sendPayload, 1);
             }
 
+            lblMqttMessagePublishLength.Content = (sendPayload.Length - 1).ToString();
+            lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(
+                sendPayload, 1, sendPayload.Length - 1);
+
             var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayload.Length);
 
             byte[] sendBuffer = new byte[1 + encodedSendSize.Length + sendPayload.Length];
 
-            sendBuffer[0] = 0x30;
+            sendBuffer[0] = MqttHelper.PUBLISH_FIRST_BYTE;
             encodedSendSize.CopyTo(sendBuffer, 1);
             sendPayload.CopyTo(sendBuffer, 1 + encodedSendSize.Length);
 
@@ -329,7 +347,8 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to send MQTT PUBLISH");
+                ShowError("Failed to send MQTT PUBLISH");
+                await DisconnectCltlsClientProxySocket();
                 return;
             }
 
@@ -343,7 +362,16 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to receive MQTT fixed header");
+                ShowError("Failed to receive MQTT fixed header");
+                await DisconnectCltlsClientProxySocket();
+                return;
+            }
+
+            if ((receiveFixedHeader[0] >>> 4) != MqttHelper.MSG_TYPE_PUBLISH)
+            {
+                ShowError(
+                    $"Received MQTT message type is not PUBLISH (first byte is {receiveFixedHeader[0]:X2})");
+                await DisconnectCltlsClientProxySocket();
                 return;
             }
 
@@ -362,7 +390,8 @@ namespace CLTLS_MQTT_GUI
                 }
                 catch
                 {
-                    Error.ShowError("Failed to receive MQTT payload");
+                    ShowError("Failed to receive MQTT payload size");
+                    await DisconnectCltlsClientProxySocket();
                     return;
                 }
             }
@@ -377,7 +406,8 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                Error.ShowError("Failed to receive MQTT fixed header");
+                ShowError("Failed to receive MQTT fixed header");
+                await DisconnectCltlsClientProxySocket();
                 return;
             }
 
@@ -392,8 +422,9 @@ namespace CLTLS_MQTT_GUI
             }
 
             UpdateUiMqttPublishReceive(true);
-            lblMqttMessageReceiveLength.Content = receivePayloadSize.ToString();
-            lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(receivePayload);
+            lblMqttMessageReceiveLength.Content = (receivePayloadSize - 1).ToString();
+            lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(
+                receivePayload, 1, receivePayloadSize - 1);
         }
     }
 }

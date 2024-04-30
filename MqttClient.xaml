@@ -72,7 +72,7 @@
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                     <Label>MQTT Message Source:</Label>
-                    <RadioButton x:Name="rbEnterText" GroupName="rbMqttMessageSource" Margin="10,0,0,0" IsChecked="True" VerticalContentAlignment="Center" Checked="rbEnterText_Checked">Enter Text</RadioButton>
+                    <RadioButton x:Name="rbEnterText" GroupName="rbMqttMessageSource" Margin="10,0,0,0" VerticalContentAlignment="Center" Checked="rbEnterText_Checked">Enter Text</RadioButton>
                     <RadioButton x:Name="rbEnterSize" GroupName="rbMqttMessageSource" Margin="10,0,0,0" VerticalContentAlignment="Center" Checked="rbEnterSize_Checked">Enter Size</RadioButton>
                 </StackPanel>
 
