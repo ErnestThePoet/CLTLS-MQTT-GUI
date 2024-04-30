@@ -309,13 +309,11 @@ namespace CLTLS_MQTT_GUI
                     return;
                 }
 
-                // With additional one byte indicating whether payload is text
-                sendPayloadSize += 1;
-
                 sendPayload = new byte[sendPayloadSize];
 
                 random.NextBytes(sendPayload);
 
+                // First byte indicates whether payload encoding
                 sendPayload[0] = Constants.PAYLOAD_TYPE_BINARY;
             }
             else
@@ -327,9 +325,8 @@ namespace CLTLS_MQTT_GUI
                 textBytes.CopyTo(sendPayload, 1);
             }
 
-            lblMqttMessagePublishLength.Content = (sendPayload.Length - 1).ToString();
-            lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(
-                sendPayload, 1, sendPayload.Length - 1);
+            lblMqttMessagePublishLength.Content = sendPayload.Length.ToString();
+            lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(sendPayload);
 
             var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayload.Length);
 
@@ -422,9 +419,8 @@ namespace CLTLS_MQTT_GUI
             }
 
             UpdateUiMqttPublishReceive(true);
-            lblMqttMessageReceiveLength.Content = (receivePayloadSize - 1).ToString();
-            lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(
-                receivePayload, 1, receivePayloadSize - 1);
+            lblMqttMessageReceiveLength.Content = receivePayloadSize.ToString();
+            lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(receivePayload);
         }
     }
 }

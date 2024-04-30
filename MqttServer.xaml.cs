@@ -201,9 +201,8 @@ namespace CLTLS_MQTT_GUI
                     }
 
                     UpdateUiMqttPublishReceive(true);
-                    lblMqttMessageReceiveLength.Content = (receivePayloadSize - 1).ToString();
-                    lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(
-                        receivePayload, 1, receivePayloadSize - 1);
+                    lblMqttMessageReceiveLength.Content = receivePayloadSize.ToString();
+                    lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(receivePayload);
 
                     byte[]? responsePayload = null;
 
@@ -235,9 +234,8 @@ namespace CLTLS_MQTT_GUI
                         responsePayload[0] = Constants.PAYLOAD_TYPE_BINARY;
                     }
 
-                    lblMqttMessageResponseLength.Content = (responsePayload.Length - 1).ToString();
-                    lblMqttMessageResponseSha256.Content = CryptoUtils.Sha256BytesB64(
-                        responsePayload, 1, responsePayload.Length - 1);
+                    lblMqttMessageResponseLength.Content = responsePayload.Length.ToString();
+                    lblMqttMessageResponseSha256.Content = CryptoUtils.Sha256BytesB64(responsePayload);
 
                     var encodedResponseSize = MqttHelper.EncodeMqttRemainingLength(responsePayload.Length);
 
