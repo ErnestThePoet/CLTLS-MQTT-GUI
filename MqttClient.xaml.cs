@@ -66,8 +66,8 @@ namespace CLTLS_MQTT_GUI
             lblCltlsClientConnectionStatus.Foreground = new SolidColorBrush(
                 connected ? Colors.Green : Colors.Red);
             lblCltlsClientConnectionStatus.Content = connected ?
-                "CL-TLS Client Proxy Connected" :
-                "CL-TLS Client Proxy Not Connected";
+                "Connected" :
+                "Not Connected";
             gbServerConnection.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
 
             if (!connected)
@@ -81,8 +81,8 @@ namespace CLTLS_MQTT_GUI
             lblServerConnectionStatus.Foreground = new SolidColorBrush(
                 connected ? Colors.Green : Colors.Red);
             lblServerConnectionStatus.Content = connected ?
-                "Server Connected" :
-                "Server Not Connected";
+                "Connected" :
+                "Not Connected";
             gbMqttMessagePublish.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
             gbMqttMessageReceive.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
             btnServerConnect.IsEnabled = !connected;
@@ -99,7 +99,7 @@ namespace CLTLS_MQTT_GUI
 
         public void UpdateUiMqttPublishDelivery(bool delivered)
         {
-            lblMqttDeliveryStatus.Content = delivered ? "Delivered" : "Not Delivered";
+            lblMqttDeliveryStatus.Content = delivered ? "Sent MQTT PUBLISH" : "Not Sent";
             lblMqttDeliveryStatus.Foreground = new SolidColorBrush(delivered ? Colors.Green : Colors.Blue);
 
             if (!delivered)
@@ -112,7 +112,7 @@ namespace CLTLS_MQTT_GUI
         public void UpdateUiMqttPublishReceive(bool received)
         {
             lblMqttMessageReceiveStatus.Content = received ?
-                "Received MQTT PUBLISH From Server" :
+                "Received MQTT PUBLISH" :
                 "No MQTT Message Received";
             lblMqttMessageReceiveStatus.Foreground = new SolidColorBrush(received ? Colors.Green : Colors.Blue);
 

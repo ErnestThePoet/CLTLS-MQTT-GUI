@@ -69,7 +69,7 @@ namespace CLTLS_MQTT_GUI
         public void UpdateUiMqttPublishReceive(bool received)
         {
             lblMqttMessageReceiveStatus.Content = received ?
-                "Received MQTT PUBLISH From Client" :
+                "Received MQTT PUBLISH" :
                 "No MQTT Message Received";
             lblMqttMessageReceiveStatus.Foreground = new SolidColorBrush(received ? Colors.Green : Colors.Blue);
 
@@ -84,7 +84,7 @@ namespace CLTLS_MQTT_GUI
         public void UpdateUiMqttPublishResponse(bool sent)
         {
             lblMqttMessageResponseStatus.Content = sent ?
-                "Sent MQTT PUBLISH To Client" :
+                "Sent MQTT PUBLISH" :
                 "No MQTT Message Response Sent";
             lblMqttMessageResponseStatus.Foreground = new SolidColorBrush(sent ? Colors.Green : Colors.Blue);
 

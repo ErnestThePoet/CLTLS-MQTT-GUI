@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CLTLS_MQTT_GUI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="950">
+             d:DesignHeight="450" d:DesignWidth="750">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -29,58 +29,124 @@
                     Margin="10,0,0,0" 
                     VerticalAlignment="Center" 
                     FontWeight="Bold" 
-                    Foreground="Red">
-                    MQTT Server Not Started
-                </Label>
+                    Foreground="Red"/>
             </DockPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="1" x:Name="gbMqttMessageReceive" Header="MQTT Message Receive" Margin="0,5,0,0">
+        <GroupBox Grid.Row="1" 
+                  x:Name="gbMqttMessageReceive" 
+                  Header="MQTT Message Receive" 
+                  Margin="0,5,0,0"
+                  Padding="0,5,0,0">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Bottom"
-                    LastChildFill="False">
-                    <Label Padding="5,5,0,5">Length:</Label>
-                    <Label x:Name="lblMqttMessageReceiveLength" 
-                        Foreground="DarkOrange" 
-                        FontWeight="Bold" 
-                        Padding="0,5,5,5"/>
+                           LastChildFill="False"
+                           Margin="0,5,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                    <Label Padding="5,5,0,5">SHA256:</Label>
-                    <Label x:Name="lblMqttMessageReceiveSha256" 
-                        Foreground="DarkOrange" 
-                        FontWeight="Bold" 
-                        Padding="0,5,5,5"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" 
+                               Grid.Column="0" 
+                               HorizontalAlignment="Right"
+                               Padding="5,0,0,0">
+                            Length:
+                        </Label>
+
+                        <Label Grid.Row="0" 
+                               Grid.Column="1" 
+                               x:Name="lblMqttMessageReceiveLength" 
+                               Foreground="DarkOrange" 
+                               FontWeight="Bold"
+                               Padding="5,0,5,0"/>
+
+                        <Label Grid.Row="1" 
+                               Grid.Column="0" 
+                               HorizontalAlignment="Right"
+                               Padding="5,0,0,0">
+                            SHA256:
+                        </Label>
+
+                        <Label Grid.Row="1" 
+                               Grid.Column="1" 
+                               x:Name="lblMqttMessageReceiveSha256" 
+                               Foreground="DarkOrange" 
+                               FontWeight="Bold"
+                               Padding="5,0,5,0"/>
+                    </Grid>
 
                     <Label DockPanel.Dock="Right"
-                        x:Name="lblMqttMessageReceiveStatus"
-                        FontWeight="Bold" 
-                        Foreground="Blue">No MQTT Message Received</Label>
+                           x:Name="lblMqttMessageReceiveStatus"
+                           FontWeight="Bold" 
+                           Foreground="Blue"
+                           VerticalAlignment="Center"/>
                 </DockPanel>
 
                 <TextBox DockPanel.Dock="Top" x:Name="tbMqttReceivedMessage" IsReadOnly="True"/>
             </DockPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="2" x:Name="gbMqttMessageResponse" Header="MQTT Message Response" Margin="0,5,0,0">
+        <GroupBox Grid.Row="2" 
+                  x:Name="gbMqttMessageResponse" 
+                  Header="MQTT Message Response" 
+                  Margin="0,5,0,0" 
+                  Padding="0,5,0,0">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Bottom"
-                        LastChildFill="False">
-                    <Label Padding="5,5,0,5">Length:</Label>
-                    <Label x:Name="lblMqttMessageResponseLength"
-                        Foreground="DarkOrange" 
-                        FontWeight="Bold" 
-                        Padding="0,5,5,5"/>
+                           LastChildFill="False"
+                           Margin="0,5,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                    <Label Padding="5,5,0,5">SHA256:</Label>
-                    <Label x:Name="lblMqttMessageResponseSha256" 
-                        Foreground="DarkOrange" 
-                        FontWeight="Bold" 
-                        Padding="0,5,5,5"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" 
+                               Grid.Column="0" 
+                               HorizontalAlignment="Right"
+                               Padding="5,0,0,0">
+                            Length:
+                        </Label>
+
+                        <Label Grid.Row="0" 
+                               Grid.Column="1" 
+                               x:Name="lblMqttMessageResponseLength" 
+                               Foreground="DarkOrange" 
+                               FontWeight="Bold"
+                               Padding="5,0,5,0"/>
+
+                        <Label Grid.Row="1" 
+                               Grid.Column="0" 
+                               HorizontalAlignment="Right"
+                               Padding="5,0,0,0">
+                            SHA256:
+                        </Label>
+
+                        <Label Grid.Row="1" 
+                               Grid.Column="1" 
+                               x:Name="lblMqttMessageResponseSha256" 
+                               Foreground="DarkOrange" 
+                               FontWeight="Bold"
+                               Padding="5,0,5,0"/>
+                    </Grid>
 
                     <Label DockPanel.Dock="Right"
-                        x:Name="lblMqttMessageResponseStatus"
-                        FontWeight="Bold" 
-                        Foreground="Blue">No MQTT Message Response Sent</Label>
+                           x:Name="lblMqttMessageResponseStatus"
+                           FontWeight="Bold" 
+                           Foreground="Blue"
+                           VerticalAlignment="Center"/>
                 </DockPanel>
 
                 <TextBox DockPanel.Dock="Top" x:Name="tbMqttResponseMessage" IsReadOnly="True"/>
