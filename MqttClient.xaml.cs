@@ -297,7 +297,7 @@ namespace CLTLS_MQTT_GUI
             if (mqttPublishMessageSource == MqttPublishMessageSource.ENTER_SIZE)
             {
                 int sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
-                if (sendPayloadSize < 0)
+                if (sendPayloadSize < 1)
                 {
                     ShowError("Invalid size");
                     return;
