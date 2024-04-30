@@ -28,20 +28,21 @@ namespace CLTLS_MQTT_GUI
             ENTER_SIZE
         }
 
+        private readonly Random random;
         private readonly CryptoUtils cryptoUtils;
         private readonly TcpHelper tcpHelper;
 
         private Socket? cltlsClientProxySocket;
         private MqttPublishMessageSource mqttPublishMessageSource;
-        private string mqttPublishPayload;
 
         public MqttClient()
         {
+            random = new Random();
+
             cryptoUtils = new CryptoUtils();
             tcpHelper = new TcpHelper();
 
             mqttPublishMessageSource = MqttPublishMessageSource.ENTER_TEXT;
-            mqttPublishPayload = string.Empty;
 
             InitializeComponent();
 
@@ -68,6 +69,11 @@ namespace CLTLS_MQTT_GUI
                 "CL-TLS Client Proxy Connected" :
                 "CL-TLS Client Proxy Not Connected";
             gbServerConnection.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
+
+            if (!connected)
+            {
+                UpdateUiServerConnection(false);
+            }
         }
 
         private void UpdateUiServerConnection(bool connected)
@@ -81,12 +87,35 @@ namespace CLTLS_MQTT_GUI
             gbMqttMessageRecv.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
             btnServerConnect.IsEnabled = !connected;
             btnServerDisconnect.IsEnabled = connected;
+
+            if (connected)
+            {
+                rbEnterText.IsChecked = true;
+                tbMqttMessage.Text = "Hello World";
+                UpdateUiMqttPublishDelivery(false);
+                UpdateUiMqttPublishReceive(false);
+            }
         }
 
-        private void SyncMqttPublishMessageLengthSha256()
+        public void UpdateUiMqttPublishDelivery(bool delivered)
         {
-            lblMqttMessagePublishLength.Content = mqttPublishPayload.Length;
-            lblMqttMessagePublishSha256.Content = cryptoUtils.Sha256StringB64(mqttPublishPayload);
+            lblMqttDeliveryStatus.Content = delivered ? "Delivered" : "Not Delivered";
+            lblMqttDeliveryStatus.Foreground = new SolidColorBrush(delivered ? Colors.Green : Colors.Blue);
+        }
+
+        public void UpdateUiMqttPublishReceive(bool received)
+        {
+            lblMqttMessageReceiveStatus.Content = received ?
+                "Received MQTT PUBLISH From Server" :
+                "No MQTT Message Received";
+            lblMqttMessageReceiveStatus.Foreground = new SolidColorBrush(received ? Colors.Green : Colors.Blue);
+
+            if (!received)
+            {
+                tbMqttReceivedMessage.Clear();
+                lblMqttMessageReceiveLength.Content = "-";
+                lblMqttMessageReceiveSha256.Content = "-";
+            }
         }
 
         private void btnCltlsClientConnect_Click(object sender, RoutedEventArgs e)
@@ -117,7 +146,8 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                UpdateUiCltlsClentProxyConnection(false);
+                ShowError("Failed to connect to CL-TLS Client Proxy");
+                return;
             }
         }
 
@@ -127,6 +157,8 @@ namespace CLTLS_MQTT_GUI
             {
                 cltlsClientProxySocket!.Disconnect(false);
                 UpdateUiCltlsClentProxyConnection(false);
+                UpdateUiMqttPublishDelivery(false);
+                UpdateUiMqttPublishReceive(false);
             }
             catch
             { }
@@ -166,11 +198,10 @@ namespace CLTLS_MQTT_GUI
                 }
             }
 
-            Memory<byte> connectRequestMemory = connectRequest;
-
             try
             {
-                Convert.FromHexString(tbServerId.Text).CopyTo(connectRequestMemory.Slice(1, 8));
+                Convert.FromHexString(tbServerId.Text).CopyTo(
+                    new Memory<byte>(connectRequest).Slice(1, 8));
             }
             catch
             {
@@ -234,8 +265,8 @@ namespace CLTLS_MQTT_GUI
         {
             if (mqttPublishMessageSource == MqttPublishMessageSource.ENTER_TEXT)
             {
-                mqttPublishPayload = tbMqttMessage.Text;
-                SyncMqttPublishMessageLengthSha256();
+                lblMqttMessagePublishLength.Content = tbMqttMessage.Text.Length.ToString();
+                lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256StringB64(tbMqttMessage.Text);
             }
         }
 
@@ -249,6 +280,132 @@ namespace CLTLS_MQTT_GUI
             mqttPublishMessageSource = MqttPublishMessageSource.ENTER_SIZE;
             lblMqttMessagePublishLength.Content = "-";
             lblMqttMessagePublishSha256.Content = "-";
+        }
+
+        private async void btnMqttPublish_Click(object sender, RoutedEventArgs e)
+        {
+            int sendPayloadSize = 0;
+            byte[]? sendPayload = null;
+
+            if (mqttPublishMessageSource == MqttPublishMessageSource.ENTER_SIZE)
+            {
+                sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
+                if (sendPayloadSize < 0)
+                {
+                    ShowError("Invalid size");
+                    return;
+                }
+
+                if (sendPayloadSize > MqttHelper.MAX_REMAINING_SIZE)
+                {
+                    ShowError("Size must be <= 256MB-1");
+                    return;
+                }
+
+                // With additional one byte indicating whether payload is text
+                sendPayloadSize += 1;
+
+                sendPayload = new byte[sendPayloadSize];
+
+                random.NextBytes(sendPayload);
+
+                sendPayload[0] = Constants.PAYLOAD_TYPE_BINARY;
+
+                lblMqttMessagePublishLength.Content = sendPayloadSize.ToString();
+                lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(sendPayload);
+            }
+            else
+            {
+                var textBytes = Encoding.UTF8.GetBytes(tbMqttMessage.Text);
+
+                sendPayloadSize = textBytes.Length + 1;
+
+                sendPayload = new byte[sendPayloadSize];
+                sendPayload[0] = Constants.PAYLOAD_TYPE_UTF8;
+                textBytes.CopyTo(sendPayload, 1);
+            }
+
+            var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayloadSize);
+
+            byte[] sendBuffer = new byte[1 + encodedSendSize.Length + sendPayloadSize];
+
+            sendBuffer[0] = 0x30;
+            encodedSendSize.CopyTo(sendBuffer, 1);
+            sendPayload.CopyTo(sendBuffer, 1 + encodedSendSize.Length);
+
+            try
+            {
+                await tcpHelper.TcpSendAsync(
+                    cltlsClientProxySocket!,
+                    sendBuffer);
+            }
+            catch
+            {
+                ShowError("Failed to send MQTT PUBLISH");
+                return;
+            }
+
+            UpdateUiMqttPublishDelivery(true);
+
+            byte[]? receiveFixedHeader = null;
+
+            try
+            {
+                receiveFixedHeader = await tcpHelper.TcpRecvAsync(cltlsClientProxySocket!, 2);
+            }
+            catch
+            {
+                ShowError("Failed to receive MQTT fixed header");
+                return;
+            }
+
+            byte receiveCurrentByte = receiveFixedHeader[1];
+            int receivePayloadSize = 0;
+            int receiveMultipler = 1;
+
+            while ((receiveCurrentByte & 0x80) != 0)
+            {
+                receivePayloadSize += receiveMultipler * (receiveCurrentByte & 0x7F);
+                receiveMultipler *= 128;
+
+                try
+                {
+                    receiveCurrentByte = (await tcpHelper.TcpRecvAsync(cltlsClientProxySocket!, 1))[0];
+                }
+                catch
+                {
+                    ShowError("Failed to receive MQTT payload");
+                    return;
+                }
+            }
+
+            receivePayloadSize += receiveMultipler * (receiveCurrentByte & 0x7F);
+
+            byte[]? receivePayload = null;
+
+            try
+            {
+                receivePayload = await tcpHelper.TcpRecvAsync(cltlsClientProxySocket!, receivePayloadSize);
+            }
+            catch
+            {
+                ShowError("Failed to receive MQTT fixed header");
+                return;
+            }
+
+            if (receivePayload[0] == Constants.PAYLOAD_TYPE_UTF8)
+            {
+                tbMqttReceivedMessage.Text = Encoding.UTF8.GetString(
+                    new Memory<byte>(receivePayload).Slice(1).Span);
+            }
+            else
+            {
+                tbMqttReceivedMessage.Text = "(Binary Data)";
+            }
+
+            UpdateUiMqttPublishReceive(true);
+            lblMqttMessageReceiveLength.Content = receivePayloadSize.ToString();
+            lblMqttMessageReceiveSha256.Content = CryptoUtils.Sha256BytesB64(receivePayload);
         }
     }
 }

@@ -11,13 +11,17 @@ namespace CLTLS_MQTT_GUI
     {
         public async Task TcpSendAsync(Socket socket, byte[] data)
         {
-            int sent_size = 0;
+            Memory<byte> dataMemory = data;
+            await TcpSendAsync(socket, dataMemory);
+        }
 
-            ArraySegment<byte> dataSpan = data;
+        public async Task TcpSendAsync(Socket socket, Memory<byte> data)
+        {
+            int sent_size = 0;
 
             while (sent_size < data.Length)
             {
-                int current_send_size = await socket.SendAsync(dataSpan.Slice(sent_size));
+                int current_send_size = await socket.SendAsync(data.Slice(sent_size));
 
                 sent_size += current_send_size;
             }

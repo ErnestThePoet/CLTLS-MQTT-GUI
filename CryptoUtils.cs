@@ -9,14 +9,15 @@ namespace CLTLS_MQTT_GUI
 {
     class CryptoUtils
     {
-        private SHA256 sha256;
+        private static SHA256 sha256 = SHA256.Create();
 
-        public CryptoUtils()
+        public static string Sha256BytesB64(byte[] bytes)
         {
-            sha256 = SHA256.Create();
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
 
-        public string Sha256StringB64(string s)
+        public static string Sha256StringB64(string s)
         {
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(s));
             return Convert.ToBase64String(hash);
