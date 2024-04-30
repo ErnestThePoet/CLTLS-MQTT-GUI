@@ -328,6 +328,8 @@ namespace CLTLS_MQTT_GUI
             lblMqttMessagePublishLength.Content = sendPayload.Length.ToString();
             lblMqttMessagePublishSha256.Content = CryptoUtils.Sha256BytesB64(sendPayload);
 
+            UpdateUiMqttPublishReceive(false);
+
             var encodedSendSize = MqttHelper.EncodeMqttRemainingLength(sendPayload.Length);
 
             byte[] sendBuffer = new byte[1 + encodedSendSize.Length + sendPayload.Length];
