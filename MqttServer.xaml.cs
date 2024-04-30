@@ -146,6 +146,9 @@ namespace CLTLS_MQTT_GUI
                         break;
                     }
 
+                    UpdateUiMqttPublishReceive(false);
+                    UpdateUiMqttPublishResponse(false);
+
                     if ((receiveFixedHeader[0] >>> 4) == MqttHelper.MSG_TYPE_DISCONNECT)
                     {
                         break;
