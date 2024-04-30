@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <GroupBox Grid.Row="0" Header="CL-TLS Client Proxy Connection" Margin="0,5,0,0">
-            <StackPanel Orientation="Horizontal">
+            <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Label>CL-TLS Client IP:</Label>
                     <TextBox x:Name="tbCltlsClientIp" Text="172.24.193.208" Width="100" VerticalContentAlignment="Center"/>
@@ -31,18 +31,19 @@
                     <Button x:Name="btnCltlsClientDisconnect" Width="90" Margin="10,0,0,0" IsEnabled="False" Click="btnCltlsClientDisconnect_Click">Disconnect</Button>
                 </StackPanel>
 
-                <Label x:Name="lblCltlsClientConnectionStatus" 
+                <Label DockPanel.Dock="Right" 
+                       x:Name="lblCltlsClientConnectionStatus" 
                        Margin="10,0,0,0" 
                        VerticalAlignment="Center" 
                        FontWeight="Bold" 
                        Foreground="Red">
                     CL-TLS Client Proxy Not Connected
                 </Label>
-            </StackPanel>
+            </DockPanel>
         </GroupBox>
 
         <GroupBox Grid.Row="1" x:Name="gbServerConnection" Header="Server Connection" Margin="0,5,0,0">
-            <StackPanel Orientation="Horizontal">
+            <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Label>Server ID:</Label>
                     <TextBox x:Name="tbServerId" Text="BB00000000000001" Width="150" VerticalContentAlignment="Center"/>
@@ -58,14 +59,15 @@
                     <Button x:Name="btnServerDisconnect" Width="90" Margin="10,0,0,0" IsEnabled="False" Click="btnServerDisconnect_Click">Disconnect</Button>
                 </StackPanel>
 
-                <Label x:Name="lblServerConnectionStatus" 
-                Margin="10,0,0,0" 
-                VerticalAlignment="Center" 
-                FontWeight="Bold" 
-                Foreground="Red">
+                <Label DockPanel.Dock="Right" 
+                    x:Name="lblServerConnectionStatus" 
+                    Margin="10,0,0,0" 
+                    VerticalAlignment="Center" 
+                    FontWeight="Bold" 
+                    Foreground="Red">
                     Server Not Connected
                 </Label>
-            </StackPanel>
+            </DockPanel>
         </GroupBox>
 
         <GroupBox Grid.Row="2" x:Name="gbMqttMessagePublish" Header="MQTT Message Publish" Margin="0,5,0,0">
@@ -76,27 +78,28 @@
                     <RadioButton x:Name="rbEnterSize" GroupName="rbMqttMessageSource" Margin="10,0,0,0" VerticalContentAlignment="Center" Checked="rbEnterSize_Checked">Enter Size</RadioButton>
                 </StackPanel>
 
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0">
+                <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" Margin="0,10,0,0">
                     <Button x:Name="btnMqttPublish" Width="200" Click="btnMqttPublish_Click">PUBLISH</Button>
                     <Label Padding="5,5,0,5">Length:</Label>
                     <Label x:Name="lblMqttMessagePublishLength" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
                     <Label Padding="5,5,0,5">SHA256:</Label>
                     <Label x:Name="lblMqttMessagePublishSha256" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
-                    <Label x:Name="lblMqttDeliveryStatus" 
+                    <Label DockPanel.Dock="Right"
+                        x:Name="lblMqttDeliveryStatus" 
                         Margin="10,0,0,0"
                         FontWeight="Bold" 
                         Foreground="Blue">
                         Not Delivered
                     </Label>
-                </StackPanel>
+                </DockPanel>
 
                 <TextBox x:Name="tbMqttMessage" Text="Hello World" AcceptsReturn="True" TextChanged="tbMqttMessage_TextChanged"/>
             </DockPanel>
@@ -104,27 +107,27 @@
 
         <GroupBox Grid.Row="3" x:Name="gbMqttMessageReceive" Header="MQTT Message Receive" Margin="0,5,0,0">
             <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom"
-                            Orientation="Horizontal">
+                <DockPanel DockPanel.Dock="Bottom"
+                            LastChildFill="False">
                     <Label Padding="5,5,0,5">Length:</Label>
                     <Label x:Name="lblMqttMessageReceiveLength" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
                     <Label Padding="5,5,0,5">SHA256:</Label>
                     <Label x:Name="lblMqttMessageReceiveSha256" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
-                    <Label DockPanel.Dock="Top"
+                    <Label DockPanel.Dock="Right"
                         x:Name="lblMqttMessageReceiveStatus"
                         FontWeight="Bold" 
                         Foreground="Blue">No MQTT Message Received</Label>
-                </StackPanel>
+                </DockPanel>
 
-                <TextBox x:Name="tbMqttReceivedMessage" IsReadOnly="True"/>
+                <TextBox DockPanel.Dock="Top" x:Name="tbMqttReceivedMessage" IsReadOnly="True"/>
             </DockPanel>
         </GroupBox>
     </Grid>

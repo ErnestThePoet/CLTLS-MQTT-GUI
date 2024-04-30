@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <GroupBox Grid.Row="0" Header="MQTT Server Options" Margin="0,5,0,0">
-            <StackPanel Orientation="Horizontal">
+            <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <Label>Server Port:</Label>
                     <TextBox x:Name="tbServerPort" Text="22601" Width="100" VerticalContentAlignment="Center"/>
@@ -24,65 +24,66 @@
                     <Button x:Name="btnServerStart" Width="90" Click="btnServerStart_Click">Start</Button>
                 </StackPanel>
 
-                <Label x:Name="lblServerStatus" 
-                   Margin="10,0,0,0" 
-                   VerticalAlignment="Center" 
-                   FontWeight="Bold" 
-                   Foreground="Red">
+                <Label DockPanel.Dock="Right" 
+                    x:Name="lblServerStatus" 
+                    Margin="10,0,0,0" 
+                    VerticalAlignment="Center" 
+                    FontWeight="Bold" 
+                    Foreground="Red">
                     MQTT Server Not Started
                 </Label>
-            </StackPanel>
+            </DockPanel>
         </GroupBox>
 
         <GroupBox Grid.Row="1" x:Name="gbMqttMessageReceive" Header="MQTT Message Receive" Margin="0,5,0,0">
             <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom"
-                    Orientation="Horizontal">
+                <DockPanel DockPanel.Dock="Bottom"
+                    LastChildFill="False">
                     <Label Padding="5,5,0,5">Length:</Label>
                     <Label x:Name="lblMqttMessageReceiveLength" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
                     <Label Padding="5,5,0,5">SHA256:</Label>
                     <Label x:Name="lblMqttMessageReceiveSha256" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
-                    <Label DockPanel.Dock="Top"
+                    <Label DockPanel.Dock="Right"
                         x:Name="lblMqttMessageReceiveStatus"
                         FontWeight="Bold" 
                         Foreground="Blue">No MQTT Message Received</Label>
-                </StackPanel>
+                </DockPanel>
 
-                <TextBox x:Name="tbMqttReceivedMessage" IsReadOnly="True"/>
+                <TextBox DockPanel.Dock="Top" x:Name="tbMqttReceivedMessage" IsReadOnly="True"/>
             </DockPanel>
         </GroupBox>
 
         <GroupBox Grid.Row="2" x:Name="gbMqttMessageResponse" Header="MQTT Message Response" Margin="0,5,0,0">
             <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom"
-                        Orientation="Horizontal">
+                <DockPanel DockPanel.Dock="Bottom"
+                        LastChildFill="False">
                     <Label Padding="5,5,0,5">Length:</Label>
                     <Label x:Name="lblMqttMessageResponseLength"
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
                     <Label Padding="5,5,0,5">SHA256:</Label>
                     <Label x:Name="lblMqttMessageResponseSha256" 
-                           Foreground="DarkOrange" 
-                           FontWeight="Bold" 
-                           Padding="0,5,5,5"/>
+                        Foreground="DarkOrange" 
+                        FontWeight="Bold" 
+                        Padding="0,5,5,5"/>
 
-                    <Label DockPanel.Dock="Top"
-                    x:Name="lblMqttMessageResponseStatus"
-                    FontWeight="Bold" 
-                    Foreground="Blue">No MQTT Message Response Sent</Label>
-                </StackPanel>
+                    <Label DockPanel.Dock="Right"
+                        x:Name="lblMqttMessageResponseStatus"
+                        FontWeight="Bold" 
+                        Foreground="Blue">No MQTT Message Response Sent</Label>
+                </DockPanel>
 
-                <TextBox x:Name="tbMqttResponseMessage" IsReadOnly="True"/>
+                <TextBox DockPanel.Dock="Top" x:Name="tbMqttResponseMessage" IsReadOnly="True"/>
             </DockPanel>
         </GroupBox>
     </Grid>
