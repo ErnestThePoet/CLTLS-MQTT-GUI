@@ -24,5 +24,15 @@ namespace CLTLS_MQTT_GUI
         {
             InitializeComponent();
         }
+
+        private void btnServerStart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnServerStop_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
