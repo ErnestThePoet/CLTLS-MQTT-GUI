@@ -50,15 +50,6 @@ namespace CLTLS_MQTT_GUI
             UpdateUiServerConnection(false);
         }
 
-        private void ShowError(string message)
-        {
-            MessageBox.Show(message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            return;
-        }
-
         private void UpdateUiCltlsClentProxyConnection(bool connected)
         {
             btnCltlsClientConnect.IsEnabled = !connected;
@@ -130,7 +121,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("IP address or port number invalid");
+                Error.ShowError("IP address or port number invalid");
                 return;
             }
 
@@ -146,7 +137,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to connect to CL-TLS Client Proxy");
+                Error.ShowError("Failed to connect to CL-TLS Client Proxy");
                 return;
             }
         }
@@ -173,14 +164,14 @@ namespace CLTLS_MQTT_GUI
 
             if (tbServerId.Text.Length != 16)
             {
-                ShowError("Server identity must be 8-bytes (16 hex chars)");
+                Error.ShowError("Server identity must be 8-bytes (16 hex chars)");
                 return;
             }
 
             int serverPort = 0;
             if (!int.TryParse(tbServerPort.Text, out serverPort) || serverPort < 0 || serverPort > 65535)
             {
-                ShowError("Server port invalid");
+                Error.ShowError("Server port invalid");
                 return;
             }
 
@@ -205,7 +196,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Server identity is not a valid hex string");
+                Error.ShowError("Server identity is not a valid hex string");
                 return;
             }
 
@@ -215,7 +206,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to send CONNCTL Connect Request");
+                Error.ShowError("Failed to send CONNCTL Connect Request");
                 return;
             }
 
@@ -227,20 +218,20 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to receive CONNCTL Connect Response");
+                Error.ShowError("Failed to receive CONNCTL Connect Response");
                 return;
             }
 
             if (connectResponse[0] != 0x10)
             {
-                ShowError($"Invalid response message type (0x{connectResponse[0]:X2}) received; " +
+                Error.ShowError($"Invalid response message type (0x{connectResponse[0]:X2}) received; " +
                          "expecting CONNCTL_MSG_TYPE_CONNECT_RESPONSE (0x10)");
                 return;
             }
 
             if (connectResponse[1] == 0xF0)
             {
-                ShowError("CL-TLS Client reports connection failed");
+                Error.ShowError("CL-TLS Client reports connection failed");
                 return;
             }
 
@@ -256,7 +247,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to send MQTT DISCONNECT");
+                Error.ShowError("Failed to send MQTT DISCONNECT");
                 return;
             }
         }
@@ -292,13 +283,13 @@ namespace CLTLS_MQTT_GUI
                 sendPayloadSize = SizeHelper.ParseSize(tbMqttMessage.Text);
                 if (sendPayloadSize < 0)
                 {
-                    ShowError("Invalid size");
+                    Error.ShowError("Invalid size");
                     return;
                 }
 
                 if (sendPayloadSize > MqttHelper.MAX_REMAINING_SIZE)
                 {
-                    ShowError("Size must be <= 256MB-1");
+                    Error.ShowError("Size must be <= 256MB-1");
                     return;
                 }
 
@@ -341,7 +332,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to send MQTT PUBLISH");
+                Error.ShowError("Failed to send MQTT PUBLISH");
                 return;
             }
 
@@ -355,18 +346,18 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to receive MQTT fixed header");
+                Error.ShowError("Failed to receive MQTT fixed header");
                 return;
             }
 
             byte receiveCurrentByte = receiveFixedHeader[1];
             int receivePayloadSize = 0;
-            int receiveMultipler = 1;
+            int receiveMultiplier = 1;
 
             while ((receiveCurrentByte & 0x80) != 0)
             {
-                receivePayloadSize += receiveMultipler * (receiveCurrentByte & 0x7F);
-                receiveMultipler *= 128;
+                receivePayloadSize += receiveMultiplier * (receiveCurrentByte & 0x7F);
+                receiveMultiplier *= 128;
 
                 try
                 {
@@ -374,12 +365,12 @@ namespace CLTLS_MQTT_GUI
                 }
                 catch
                 {
-                    ShowError("Failed to receive MQTT payload");
+                    Error.ShowError("Failed to receive MQTT payload");
                     return;
                 }
             }
 
-            receivePayloadSize += receiveMultipler * (receiveCurrentByte & 0x7F);
+            receivePayloadSize += receiveMultiplier * (receiveCurrentByte & 0x7F);
 
             byte[]? receivePayload = null;
 
@@ -389,7 +380,7 @@ namespace CLTLS_MQTT_GUI
             }
             catch
             {
-                ShowError("Failed to receive MQTT fixed header");
+                Error.ShowError("Failed to receive MQTT fixed header");
                 return;
             }
 
