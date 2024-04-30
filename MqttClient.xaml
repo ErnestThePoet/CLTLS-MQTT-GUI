@@ -96,7 +96,7 @@
             </DockPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="3" x:Name="gbMqttMessageRecv" Header="MQTT Message Reception" Margin="0,5,0,0">
+        <GroupBox Grid.Row="3" x:Name="gbMqttMessageReceive" Header="MQTT Message Reception" Margin="0,5,0,0">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom"
                             Orientation="Horizontal">

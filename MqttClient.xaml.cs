@@ -84,7 +84,7 @@ namespace CLTLS_MQTT_GUI
                 "Server Connected" :
                 "Server Not Connected";
             gbMqttMessagePublish.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
-            gbMqttMessageRecv.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
+            gbMqttMessageReceive.Visibility = connected ? Visibility.Visible : Visibility.Hidden;
             btnServerConnect.IsEnabled = !connected;
             btnServerDisconnect.IsEnabled = connected;
 
